@@ -5,6 +5,7 @@ from typing import Optional
 import torch
 import torch.nn as nn
 import numpy as np
+from PIL import Image
 
 from torchvision import transforms
 
@@ -59,6 +60,9 @@ class AgeEstimator:
         with torch.no_grad():
             _, probabilities = self.__model(image)
         probabilities = probabilities.cpu()
+        max_confidence = torch.max(probabilities, 1)[0].item()
+        if max_confidence < self.__min_prediction_probability:
+            return None
         predicted_class = torch.argmax(probabilities, 1).item()
         return predicted_class + AgeEstimator.__PREDICTED_AGE_SHIFT
 
@@ -68,6 +72,7 @@ class AgeEstimator:
                           ) -> torch.Tensor:
         if not image_in_rgb_mode:
             image = image[:, :, ::-1]
+        image = Image.fromarray(image)
         image = self.__normalization_transformation(image)
         image = image.to(self.__device)
         return image.unsqueeze(0)
