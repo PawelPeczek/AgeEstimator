@@ -59,6 +59,5 @@ result = age_estimator.estimate_age(
     image=image,
     image_in_rgb_mode=False # adjust if input image transformed in runtime!
 )
-
 ```
- 
+**result** will be None if *min_prediction_probability* is not reached by model.
