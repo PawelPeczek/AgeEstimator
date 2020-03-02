@@ -53,6 +53,8 @@ class AgeEstimator:
                      image: np.ndarray,
                      image_in_rgb_mode: bool = False
                      ) -> Optional[int]:
+        if len(image.shape) != 3 or image.shape[2] != 3:
+            raise ValueError("Input image must be RGB/BGR image.")
         image = self.__normalize_input(
             image=image,
             image_in_rgb_mode=image_in_rgb_mode
